@@ -26,7 +26,8 @@ C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/system_stm32f7xx.c \
 Core/Src/syscalls.c \
-Core/Src/sysmem.c
+Core/Src/sysmem.c \
+Drivers/CustomHAL/Src/Custom_GPIO_HAL.c
 
 # ASM source files
 ASM_SOURCES =  \
@@ -60,7 +61,8 @@ C_DEFS =  \
 C_INCLUDES =  \
 -ICore/Inc \
 -IDrivers/CMSIS/Device/ST/STM32F7xx/Include \
--IDrivers/CMSIS/Core/Include
+-IDrivers/CMSIS/Core/Include \
+-IDrivers/CustomHAL/Include
 
 
 # compile gcc flags
