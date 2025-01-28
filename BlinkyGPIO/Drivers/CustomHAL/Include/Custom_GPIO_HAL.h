@@ -26,7 +26,8 @@
 
 typedef enum GPIO_Pins 
 {
-  Pin_1 = 0,
+  Pin_0 = 0,
+  Pin_1,
   Pin_2,
   Pin_3,
   Pin_4,
@@ -41,7 +42,7 @@ typedef enum GPIO_Pins
   Pin_13,
   Pin_14,
   Pin_15
-} Pin;
+} GPIO_Pin;
 
 typedef enum GPIO_Mode
 {
@@ -49,13 +50,13 @@ typedef enum GPIO_Mode
   Output,
   Alternate_Function,
   Analog
-} Mode;
+} GPIO_Mode;
 
 typedef enum GPIO_Output_Mode
 {
   Push_Pull = 0,
   Open_Drain
-} Output_Mode;
+} GPIO_Output_Mode;
 
 typedef enum GPIO_Output_Speed 
 {
@@ -63,24 +64,43 @@ typedef enum GPIO_Output_Speed
   Medium,
   High,
   Very_High
-} Output_Speed;
+} GPIO_Output_Speed;
 
 typedef enum GPIO_PullUp_PullDown 
 {
   No_PullUp_PullDown = 0,
   PullUp,
   PullDown
-} Output_PullUp_PullDown;
+} GPIO_Output_Pull;
 
-
+typedef enum GPIO_Alternate_Functions
+{
+  Alternate_Function_0 = 0,
+  Alternate_Function_1,
+  Alternate_Function_2,
+  Alternate_Function_3,
+  Alternate_Function_4,
+  Alternate_Function_5,
+  Alternate_Function_6,
+  Alternate_Function_7,
+  Alternate_Function_8,
+  Alternate_Function_9,
+  Alternate_Function_10,
+  Alternate_Function_11,
+  Alternate_Function_12,
+  Alternate_Function_13,
+  Alternate_Function_14,
+  Alternate_Function_15 
+} GPIO_Alternate_Function;
 
 typedef struct GPIO_Configuration
 {
-  //pin 
-  //mode 
-  //speed 
-  //pull-up/pull-down
-  //alternate function 
+  GPIO_Pin Pin;
+  GPIO_Mode Mode;
+  GPIO_Output_Mode Output_Mode;
+  GPIO_Output_Speed Output_Speed;
+  GPIO_Output_Pull Pull;
+  GPIO_Alternate_Function Alternate_Function;
 } GPIO_Config; 
 
 int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations);
