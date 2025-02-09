@@ -121,3 +121,13 @@ int GPIO_Write(GPIO_TypeDef* GPIO_Port, Pin pin, uint8_t value)
 
   return GPIO_OK;
 }
+
+int GPIO_Set(GPIO_TypeDef* GPIO_Port, Pin pin)
+{
+  return (GPIO_Write(GPIO_Port, pin, 1));
+}
+
+int GPIO_Reset(GPIO_TypeDef* GPIO_Port, Pin pin)
+{
+  return (GPIO_Write(GPIO_Port, pin, 0));
+}
