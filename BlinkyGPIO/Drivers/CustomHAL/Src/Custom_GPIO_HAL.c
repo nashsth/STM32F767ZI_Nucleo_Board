@@ -8,8 +8,14 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
 
   if(GPIO_Port < GPIOA || GPIO_Port > GPIOK)
   {
-    return -1; //invalid port given -- STM32F767xx has ports A through K only.
+    return GPIO_ERROR_INVALID_PORT; //invalid port given -- STM32F767xx has ports A through K only.
   }
+
+  if(Configurations == NULL)
+  {
+    return GPIO_ERROR_INVALID_CONFIG;
+  }
+
   //Step 1 
   uint32_t Timeout = 1000000;
   if(!((RCC -> CR) & RCC_CR_HSION))
@@ -22,7 +28,7 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
     Timeout--;
     if(0 == Timeout)
     {
-      return -2; //HSI Clock failed to stabilize
+      return GPIO_ERROR_CLOCK_TIMEOUT; //HSI Clock failed to stabilize
     }
   }
   
@@ -39,6 +45,19 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   //Step 3 
   (GPIO_Port -> MODER) &= ~(0b11 << ((Configurations -> Pin)*2)); //clear the MODER register's bits
   //corresponding to the Pin so that those bits have a well-defined starting value 
-
   (GPIO_Port -> MODER) |= (Configurations -> Mode) << ((Configurations -> Pin)*2);
+
+  (GPIO_Port -> OTYPER) &= ~(0b1 << ((Configurations -> Pin)));
+  (GPIO_Port -> OTYPER) |= (Configurations -> Output_Mode) << (Configurations -> Pin);
+  
+
+  (GPIO_Port -> OSPEEDR) &= ~(0b11 << ((Configurations -> Pin)*2));
+  (GPIO_Port -> OSPEEDR) |= (Configurations -> Output_Speed) << ((Configurations -> Pin)*2);
+  
+
+  (GPIO_Port -> PUPDR) &= ~(0b11 << ((Configurations -> Pin)*2));
+  (GPIO_Port -> PUPDR) |= (Configurations -> Output_Pull) << ((Configurations -> Pin)*2);
+  //Alternate function initialization and configuraton will be implemented later 
+
+  return GPIO_OK;
 }
