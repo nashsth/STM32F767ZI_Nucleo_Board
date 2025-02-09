@@ -64,6 +64,10 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
 
 int GPIO_Read(GPIO_TypeDef* GPIO_Port, Pin pin)
 {
+  //Step 1: Check for out-of-bounds port and pin parameters
+  //Step 2: Read the pin and return the result
+
+  //Step 1 
   if(GPIO_Port == NULL || GPIO_Port < GPIOA || GPIO_Port > GPIOK)
   {
     return GPIO_ERROR_INVALID_PORT;
@@ -74,5 +78,46 @@ int GPIO_Read(GPIO_TypeDef* GPIO_Port, Pin pin)
     return GPIO_ERROR_INVALID_PIN;
   }
 
+  //Step 2 
+  //Read the appropriate bit of IDR register (input data register) by bit shifting a 1 to the
+  //proper location, and using the bitwise AND operator, then shift that result back to the right.
+  //This is important because if you didn't bit shift the result back to the right, you'd be reading
+  //the entire 32-bit value, rather than reading only the bit value of interest.
   return (((GPIO_Port -> IDR) & (0b1 << pin)) >> pin);
+}
+
+int GPIO_Write(GPIO_TypeDef* GPIO_Port, Pin pin, uint8_t value)
+{
+  //Step 1: Check for out-of-bounds port, pin and value parameters 
+  //Write a 1 to the appropriate bit in the BSRR register. Remember that the BSRR register is a 
+  //Write-Only register, so we only need to write a 1 to the proper location to either set or
+  //reset the corresponding pin in the port. 
+
+  //Step 1 
+  if(GPIO_Port == NULL || GPIO_Port < GPIOA || GPIO_Port > GPIOK)
+  {
+    return GPIO_ERROR_INVALID_PORT;
+  }
+
+  if(pin < Pin_0 || pin > Pin_15)
+  {
+    return GPIO_ERROR_INVALID_PIN;
+  }
+
+  if(value > 1)
+  {
+    return GPIO_ERROR_INVALID_WRITE_VALUE;
+  }
+  
+  //Step 2 
+  if(value == 1)
+  {
+    (GPIO_Port -> BSRR) = (1 << pin);
+  }
+  else if(value == 0)
+  {
+    (GPIO_Port -> BSRR) = (1 << (pin + 16));
+  }
+
+  return GPIO_OK;
 }

@@ -109,7 +109,8 @@ typedef enum GPIO_Status_Conditions
   GPIO_ERROR_CLOCK_TIMEOUT = -1,
   GPIO_ERROR_INVALID_PORT = -2,
   GPIO_ERROR_INVALID_CONFIG = -3,
-  GPIO_ERROR_INVALID_PIN = -4
+  GPIO_ERROR_INVALID_PIN = -4,
+  GPIO_ERROR_INVALID_WRITE_VALUE = -5
 } GPIO_Status;
 
 int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations);
