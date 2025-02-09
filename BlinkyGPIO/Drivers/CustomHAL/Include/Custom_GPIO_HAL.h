@@ -106,9 +106,10 @@ typedef struct GPIO_Configuration
 typedef enum GPIO_Status_Conditions
 {
   GPIO_OK = 0,
-  GPIO_ERROR_INVALID_PORT = -2,
   GPIO_ERROR_CLOCK_TIMEOUT = -1,
-  GPIO_ERROR_INVALID_CONFIG = -3
+  GPIO_ERROR_INVALID_PORT = -2,
+  GPIO_ERROR_INVALID_CONFIG = -3,
+  GPIO_ERROR_INVALID_PIN = -4
 } GPIO_Status;
 
 int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations);
@@ -120,3 +121,4 @@ int GPIO_Write(GPIO_TypeDef* GPIO_Port, Pin pin, uint8_t value);
 int GPIO_Set(GPIO_TypeDef* GPIO_Port, Pin pin);
 
 int GPIO_Reset(GPIO_TypeDef* GPIO_Port, Pin pin);
+

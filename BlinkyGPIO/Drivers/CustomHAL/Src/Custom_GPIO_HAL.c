@@ -6,7 +6,7 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   //Step 2: Enable clock to peripheral 
   //Step 3: Modify the appropriate registers by copying values from the Configurations struct 
 
-  if(GPIO_Port < GPIOA || GPIO_Port > GPIOK)
+  if(GPIO_Port == NULL || GPIO_Port < GPIOA || GPIO_Port > GPIOK)
   {
     return GPIO_ERROR_INVALID_PORT; //invalid port given -- STM32F767xx has ports A through K only.
   }
@@ -60,4 +60,19 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   //Alternate function initialization and configuraton will be implemented later 
 
   return GPIO_OK;
+}
+
+int GPIO_Read(GPIO_TypeDef* GPIO_Port, Pin pin)
+{
+  if(GPIO_Port == NULL || GPIO_Port < GPIOA || GPIO_Port > GPIOK)
+  {
+    return GPIO_ERROR_INVALID_PORT;
+  }
+
+  if(pin < Pin_0 || pin > Pin_15)
+  {
+    return GPIO_ERROR_INVALID_PIN;
+  }
+
+  return (((GPIO_Port -> IDR) & (0b1 << pin)) >> pin);
 }
