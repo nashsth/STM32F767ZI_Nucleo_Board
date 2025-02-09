@@ -131,3 +131,20 @@ int GPIO_Reset(GPIO_TypeDef* GPIO_Port, Pin pin)
 {
   return (GPIO_Write(GPIO_Port, pin, 0));
 }
+
+int GPIO_Toggle(GPIO_TypeDef* GPIO_Port, Pin pin)
+{
+  if(GPIO_Port == NULL || GPIO_Port < GPIOA || GPIO_Port > GPIOK)
+  {
+    return GPIO_ERROR_INVALID_PORT;
+  }
+
+  if(pin < Pin_0 || pin > Pin_15)
+  {
+    return GPIO_ERROR_INVALID_PIN;
+  }
+  
+  (GPIO_Port -> ODR) ^= (1 << pin);
+
+  return GPIO_OK;
+}

@@ -123,3 +123,4 @@ int GPIO_Set(GPIO_TypeDef* GPIO_Port, Pin pin);
 
 int GPIO_Reset(GPIO_TypeDef* GPIO_Port, Pin pin);
 
+int GPIO_Toggle(GPIO_TypeDef* GPIO_Port, Pin pin);
