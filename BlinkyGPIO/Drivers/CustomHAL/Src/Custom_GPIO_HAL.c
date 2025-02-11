@@ -71,8 +71,8 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
     else if((Configurations -> Pin) <= Pin_15)
     {
       //modify the high register 
-      (GPIO_Port -> AFR[1]) &= ~(0b1111 << ((Configurations -> Pin)*4));
-      (GPIO_Port -> AFR[1]) |= (Configurations -> Alternate_Function) << ((Configurations -> Pin)*4);
+      (GPIO_Port -> AFR[1]) &= ~(0b1111 << (((Configurations -> Pin) % 8)*4));
+      (GPIO_Port -> AFR[1]) |= (Configurations -> Alternate_Function) << (((Configurations -> Pin) % 8)*4);
     }
 
     else
