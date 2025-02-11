@@ -57,7 +57,29 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
 
   (GPIO_Port -> PUPDR) &= ~(0b11 << ((Configurations -> Pin)*2));
   (GPIO_Port -> PUPDR) |= (Configurations -> Output_Pull) << ((Configurations -> Pin)*2);
-  //Alternate function initialization and configuraton will be implemented later 
+  
+  if((Configurations -> Mode) ==  Alternate_Function)
+  {
+    if((Configurations -> Pin) <= Pin_7)
+    {
+      //modify the low register
+      (GPIO_Port -> AFR[0]) &= ~(0b1111 << ((Configurations -> Pin)*4));
+      (GPIO_Port -> AFR[0]) |= (Configurations -> Alternate_Function) << ((Configurations -> Pin)*4);
+
+    }
+    
+    else if((Configurations -> Pin) <= Pin_15)
+    {
+      //modify the high register 
+      (GPIO_Port -> AFR[1]) &= ~(0b1111 << ((Configurations -> Pin)*4));
+      (GPIO_Port -> AFR[1]) |= (Configurations -> Alternate_Function) << ((Configurations -> Pin)*4);
+    }
+
+    else
+    {
+      return GPIO_ERROR_INVALID_PIN;
+    }
+  }
 
   return GPIO_OK;
 }
