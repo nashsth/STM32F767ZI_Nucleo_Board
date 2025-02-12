@@ -1,8 +1,9 @@
 #include "main.h"
 
-#define DELAY (1000000)
+#define DELAY (1500000)
 
-int main(void)
+
+void Blink_Using_Registers(void)
 {
 	/*
 	To make LED LD2 (connected to PB7) blink:
@@ -26,6 +27,11 @@ int main(void)
 		(GPIOB -> BSRR) |= (GPIO_BSRR_BR7);
 		for(volatile int i = 0; i <= DELAY; i++);
 	}
+}
+
+int main(void)
+{
+  Blink_Using_Registers();
 	return 0;
 }
 
