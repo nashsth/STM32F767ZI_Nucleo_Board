@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f767xx.h"
+#include "Custom_GPIO_HAL.h"
 
 
 

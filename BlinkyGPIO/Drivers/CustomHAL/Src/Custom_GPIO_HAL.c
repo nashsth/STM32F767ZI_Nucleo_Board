@@ -1,4 +1,4 @@
-#include Custom_GPIO_HAL.h 
+#include "Custom_GPIO_HAL.h" 
 
 int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
 {
@@ -38,8 +38,11 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   //Hence, we can calculate the offset that each GPIO port is from the base address of 0x4002 0000
   //and use that offset to set the correct bit in the register. The value for the GPIO base address is 
   //already defined in the stm32f767xx.h file, so you don't need to redefine it.
+  //However, it turns out that this approach will give a type conversion issue, because the GPIO_Port_Offset
+  //is defined to be a uint32_t but the GPIO_Port is a GPIO_TypeDef* pointer type, and GPIOA_BASE etc are 
+  //unsigned long integers. So we need to do some careful type conversions.
   
-  uint32_t GPIO_Port_Offset = (GPIO_Port - GPIOA_BASE)/(GPIOB_BASE - GPIOA_BASE);
+  uint32_t GPIO_Port_Offset = ((uint32_t)GPIO_Port - (uint32_t)GPIOA_BASE)/((uint32_t)GPIOB_BASE - (uint32_t)GPIOA_BASE);
   (RCC -> AHB1ENR) |= (1 << GPIO_Port_Offset);
 
   //Step 3 
@@ -56,7 +59,7 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   
 
   (GPIO_Port -> PUPDR) &= ~(0b11 << ((Configurations -> Pin)*2));
-  (GPIO_Port -> PUPDR) |= (Configurations -> Output_Pull) << ((Configurations -> Pin)*2);
+  (GPIO_Port -> PUPDR) |= (Configurations -> Pull) << ((Configurations -> Pin)*2);
   
   if((Configurations -> Mode) ==  Alternate_Function)
   {
@@ -84,7 +87,7 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   return GPIO_OK;
 }
 
-int GPIO_Read(GPIO_TypeDef* GPIO_Port, Pin pin)
+int GPIO_Read(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin)
 {
   //Step 1: Check for out-of-bounds port and pin parameters
   //Step 2: Read the pin and return the result
@@ -108,7 +111,7 @@ int GPIO_Read(GPIO_TypeDef* GPIO_Port, Pin pin)
   return (((GPIO_Port -> IDR) & (0b1 << pin)) >> pin);
 }
 
-int GPIO_Write(GPIO_TypeDef* GPIO_Port, Pin pin, uint8_t value)
+int GPIO_Write(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin, uint8_t value)
 {
   //Step 1: Check for out-of-bounds port, pin and value parameters 
   //Write a 1 to the appropriate bit in the BSRR register. Remember that the BSRR register is a 
@@ -144,17 +147,17 @@ int GPIO_Write(GPIO_TypeDef* GPIO_Port, Pin pin, uint8_t value)
   return GPIO_OK;
 }
 
-int GPIO_Set(GPIO_TypeDef* GPIO_Port, Pin pin)
+int GPIO_Set(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin)
 {
   return (GPIO_Write(GPIO_Port, pin, 1));
 }
 
-int GPIO_Reset(GPIO_TypeDef* GPIO_Port, Pin pin)
+int GPIO_Reset(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin)
 {
   return (GPIO_Write(GPIO_Port, pin, 0));
 }
 
-int GPIO_Toggle(GPIO_TypeDef* GPIO_Port, Pin pin)
+int GPIO_Toggle(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin)
 {
   if(GPIO_Port == NULL || GPIO_Port < GPIOA || GPIO_Port > GPIOK)
   {

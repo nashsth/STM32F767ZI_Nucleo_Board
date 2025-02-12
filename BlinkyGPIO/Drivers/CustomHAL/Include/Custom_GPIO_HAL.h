@@ -6,7 +6,9 @@
  * acceptable/allowed configuration.
  * */
 
-#pragma once 
+#pragma once
+#include "stm32f767xx.h"
+#include <stddef.h>
 
 /* Configuration struct deals with high-level concepts:
  * which pin do you want to configure? input or output? speed? etc.
@@ -115,12 +117,12 @@ typedef enum GPIO_Status_Conditions
 
 int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations);
 
-int GPIO_Read(GPIO_TypeDef* GPIO_Port, Pin pin);
+int GPIO_Read(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin);
 
-int GPIO_Write(GPIO_TypeDef* GPIO_Port, Pin pin, uint8_t value);
+int GPIO_Write(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin, uint8_t value);
 
-int GPIO_Set(GPIO_TypeDef* GPIO_Port, Pin pin);
+int GPIO_Set(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin);
 
-int GPIO_Reset(GPIO_TypeDef* GPIO_Port, Pin pin);
+int GPIO_Reset(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin);
 
-int GPIO_Toggle(GPIO_TypeDef* GPIO_Port, Pin pin);
+int GPIO_Toggle(GPIO_TypeDef* GPIO_Port, GPIO_Pin pin);
