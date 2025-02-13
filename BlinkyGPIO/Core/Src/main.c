@@ -1,7 +1,7 @@
 #include "main.h"
 
-#define DELAY (1500000)
-
+#define DELAY (2000000)
+#define HAL_DELAY (500000)
 
 void Blink_Using_Registers(void)
 {
@@ -29,9 +29,39 @@ void Blink_Using_Registers(void)
 	}
 }
 
+void Blink_Using_Custom_HAL(void)
+{
+  /*
+   To make LED LD2 blink using the custom HAL:
+   1) Create a GPIO_Config struct and populate it with the configurations of your choice
+   2) Call the GPIO_Init() function 
+   3) Call the GPIO_Toggle() function 
+   */
+
+  GPIO_Config LED = 
+    {
+      .Pin = Pin_7,
+      .Mode = Output,
+      .Output_Mode = Push_Pull,
+      .Output_Speed = Medium,
+      .Pull = No_PullUp_PullDown,
+      .Alternate_Function = Alternate_Function_0
+    };
+
+  GPIO_Init(GPIOB, &LED);
+
+  while(1)
+  {
+    GPIO_Toggle(GPIOB, LED.Pin);
+    for(volatile int i = 0; i <= HAL_DELAY; i++);
+  }
+}
+
+
 int main(void)
 {
-  Blink_Using_Registers();
+  //Blink_Using_Registers();
+  Blink_Using_Custom_HAL();
 	return 0;
 }
 
