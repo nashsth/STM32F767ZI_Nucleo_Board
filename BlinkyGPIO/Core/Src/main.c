@@ -40,7 +40,7 @@ void Blink_Using_Custom_HAL(void)
 
   GPIO_Config LED = 
     {
-      .Pin = Pin_7,
+      .Pin = Pin_3,
       .Mode = Output,
       .Output_Mode = Push_Pull,
       .Output_Speed = Medium,
@@ -48,11 +48,31 @@ void Blink_Using_Custom_HAL(void)
       .Alternate_Function = Alternate_Function_0
     };
 
+  GPIO_Init(GPIOA, &LED);
   GPIO_Init(GPIOB, &LED);
+  GPIO_Init(GPIOC, &LED);
+  GPIO_Init(GPIOD, &LED);
+  GPIO_Init(GPIOE, &LED);
+  GPIO_Init(GPIOF, &LED);
+  GPIO_Init(GPIOG, &LED);
+  //GPIO_Init(GPIOH, &LED); Ports H-K are not present in the 144-pin stm32F767ZI 
+  //GPIO_Init(GPIOI, &LED);
+  //GPIO_Init(GPIOJ, &LED);
+  //GPIO_Init(GPIOK, &LED);
 
   while(1)
   {
+    GPIO_Toggle(GPIOA, LED.Pin);
     GPIO_Toggle(GPIOB, LED.Pin);
+    GPIO_Toggle(GPIOC, LED.Pin);
+    GPIO_Toggle(GPIOD, LED.Pin);
+    GPIO_Toggle(GPIOE, LED.Pin);
+    GPIO_Toggle(GPIOF, LED.Pin);
+    GPIO_Toggle(GPIOG, LED.Pin);
+    //GPIO_Toggle(GPIOH, LED.Pin);
+    //GPIO_Toggle(GPIOI, LED.Pin);
+    //GPIO_Toggle(GPIOJ, LED.Pin);
+    //GPIO_Toggle(GPIOK, LED.Pin);
     for(volatile int i = 0; i <= HAL_DELAY; i++);
   }
 }
