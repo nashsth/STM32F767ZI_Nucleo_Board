@@ -3,6 +3,17 @@
 #define DELAY (2000000)
 #define HAL_DELAY (500000)
 
+
+int main(void)
+{
+  //Blink_Using_Registers();
+  //Blink_Using_Custom_HAL();
+  Blink_LED_Based_On_Input();
+	return 0;
+}
+
+
+/*************************** TEST CASES *************************/ 
 void Blink_Using_Registers(void)
 {
 	/*
@@ -32,7 +43,7 @@ void Blink_Using_Registers(void)
 void Blink_Using_Custom_HAL(void)
 {
   /*
-   To make LED LD2 blink using the custom HAL:
+   To make LED blink using the custom HAL:
    1) Create a GPIO_Config struct and populate it with the configurations of your choice
    2) Call the GPIO_Init() function 
    3) Call the GPIO_Toggle() function 
@@ -77,15 +88,66 @@ void Blink_Using_Custom_HAL(void)
   }
 }
 
-
-int main(void)
+void Blink_LED_Based_On_Input(void)
 {
-  //Blink_Using_Registers();
-  Blink_Using_Custom_HAL();
-	return 0;
-}
+  /* 
+   * Blink an LED based on an input value. I.e.:
+   * 1) Set a pin, P1 as an output that will be toggled.
+   * 2) Set another pin, P2 as an input that will read the value of P1. Connect P1 to P2 via jumper wire 
+   * 3) Set yet another pin, P3, as an output pin connected to an LED.
+   *
+   * The logic is that whenever the microcontroller detects P2 is high/low, it sets P3 as high/low.
+   * So essentially, P3 follows P1 by using P2 to read the value of P1.
+   */
 
-  /****************** Some Educational Notes *******************/
+  GPIO_Config LED = 
+    {
+      .Pin = Pin_3,
+      .Mode = Output,
+      .Output_Mode = Push_Pull,
+      .Output_Speed = Medium,
+      .Pull = No_PullUp_PullDown,
+      .Alternate_Function = Alternate_Function_0
+    };
+  
+  GPIO_Config INPUT = 
+    {
+      .Pin = Pin_0,
+      .Mode = Input,
+      .Output_Mode = Push_Pull,
+      .Output_Speed = Medium,
+      .Pull = No_PullUp_PullDown,
+      .Alternate_Function = Alternate_Function_0
+    };
+
+  GPIO_Config OUTPUT = 
+    {
+      .Pin = Pin_3,
+      .Mode = Output,
+      .Output_Mode = Push_Pull,
+      .Output_Speed = Medium,
+      .Pull = No_PullUp_PullDown,
+      .Alternate_Function = Alternate_Function_0
+    };
+
+  GPIO_Init(GPIOA, &LED);
+  GPIO_Init(GPIOC, &INPUT);
+  GPIO_Init(GPIOC, &OUTPUT);
+
+  int Measured_Value = 0;
+
+  while(1)
+  {
+    GPIO_Toggle(GPIOC, OUTPUT.Pin);
+    Measured_Value = GPIO_Read(GPIOC, INPUT.Pin);
+    GPIO_Write(GPIOA,LED.Pin, Measured_Value);
+    for(volatile int i = 0; i <= HAL_DELAY; i++);
+  }
+}
+/********************** END OF TEST CASES ***************************/ 
+
+
+/****************** Some Educational Notes *******************/
   /*
     * 1) How does the Peripheral Access Layer header file (stm32f767xx.h), included in main.h,
     * work?
@@ -148,5 +210,6 @@ int main(void)
     * that pointer. This is how you would have to modify every register if you had a register address,
     * rather than the peripheral struct.
     */
+
 
 
