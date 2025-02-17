@@ -41,3 +41,51 @@
  *
  *
  * */ 
+
+#pragma once 
+
+typedef enum
+{
+  HSI = 0,
+  HSE,
+  LSE,
+  LSI,
+  PLL 
+} Clocks;
+
+typedef enum 
+{
+  HSI = 0,
+  HSE 
+} PLL_Source;
+
+typedef struct 
+{
+  Clocks clock;
+  struct
+  {
+    PLL_Source Source;
+    uint8_t M;
+    uint16_t N;
+    uint8_t P;
+    uint8_t Q;
+  } PLL_Config;
+
+} Clock_Source;
+
+int RCC_Configure_Clock(Clock_Source clock);
+
+int RCC_Configure_PLL();
+
+int RCC_Clock_Is_Ready();
+
+int RCC_Set_System_Clock();
+
+int RCC_Enable_Peripheral_Clock();
+
+int RCC_Measure_Clock_Frequency();
+
+int RCC_Output_Clock_Signal();
+
+
+
