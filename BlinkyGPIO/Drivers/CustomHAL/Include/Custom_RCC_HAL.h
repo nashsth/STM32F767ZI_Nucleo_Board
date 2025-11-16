@@ -49,17 +49,17 @@
 
 typedef enum
 {
-  HSI = 0,
-  HSE,
-  LSE,
-  LSI,
-  PLL 
+  CLOCK_HSI = 0,
+  CLOCK_HSE,
+  CLOCK_LSE,
+  CLOCK_LSI,
+  CLOCK_PLL 
 } Clocks;
 
 typedef enum 
 {
-  HSI = 0,
-  HSE 
+  PLL_HSI = 0,
+  PLL_HSE 
 } PLL_Source;
 
 typedef struct 
@@ -95,6 +95,7 @@ typedef enum
   RCC_DTCMRAM,
   RCC_DMA1,
   RCC_DMA2,
+  RCC_DMA2D,
   RCC_ETHMAC,
   RCC_ETHMACTX,
   RCC_ETHMACRX,
@@ -173,11 +174,11 @@ typedef enum
 
 typedef struct
 {
-  volatile uint32_t* Register, //must be a pointer because we deal with a register (i.e. an address in memory) here
-  uint32_t Bit
+  volatile uint32_t* Register; //must be a pointer because we deal with a register (i.e. an address in memory) here
+  uint32_t Bit;
 } Peripheral_Clock_Enable_t;
 
-extern const Peripheral_Clock_Enable_t RCC_Table[COUNT];
+extern const Peripheral_Clock_Enable_t RCC_Table[RCC_COUNT];
 
 int RCC_Configure_Clock(Clock_Source clock);
 

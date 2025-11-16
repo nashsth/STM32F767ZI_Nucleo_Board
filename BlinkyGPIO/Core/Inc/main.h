@@ -7,6 +7,8 @@ extern "C" {
 #endif
 
 #include "Custom_GPIO_HAL.h"
+#include "Custom_RCC_HAL.h"
+
 
 void Error_Handler(void);
 

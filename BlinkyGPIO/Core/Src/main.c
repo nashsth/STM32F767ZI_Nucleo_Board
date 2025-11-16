@@ -3,16 +3,6 @@
 #define DELAY (2000000)
 #define HAL_DELAY (500000)
 
-
-int main(void)
-{
-  //Blink_Using_Registers();
-  //Blink_Using_Custom_HAL();
-  Blink_LED_Based_On_Input();
-	return 0;
-}
-
-
 /*************************** TEST CASES *************************/ 
 void Blink_Using_Registers(void)
 {
@@ -145,6 +135,14 @@ void Blink_LED_Based_On_Input(void)
   }
 }
 /********************** END OF TEST CASES ***************************/ 
+
+int main(void)
+{
+  //Blink_Using_Registers();
+  //Blink_Using_Custom_HAL();
+  Blink_LED_Based_On_Input();
+	return 0;
+}
 
 
 /****************** Some Educational Notes *******************/
