@@ -207,7 +207,9 @@ int RCC_Set_System_Clock();
 //going on, however this method still uses the principle of associativty -- it associates the
 //peripheral name with the register information for that peripheral.
 
-int RCC_Enable_Peripheral_Clock();
+int RCC_Enable_Peripheral_Clock(Peripherals peripheral);
+
+int RCC_Disable_Peripheral_Clock(Peripherals peripheral);
 
 int RCC_Measure_Clock_Frequency();
 

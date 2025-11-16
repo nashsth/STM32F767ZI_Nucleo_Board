@@ -96,3 +96,20 @@ const Peripheral_Clock_Enable_t RCC_Table[RCC_COUNT] =
   [RCC_DFSDM1]   = {.Register = (&RCC->APB2ENR), .Bit = RCC_APB2ENR_DFSDM1EN},
   [RCC_MDIO]     = {.Register = (&RCC->APB2ENR), .Bit = RCC_APB2ENR_MDIOEN},
 };
+
+int Enable_Peripheral_Clock(Peripherals peripheral)
+{
+  *RCC_Table[peripheral].Register |= (RCC_Table[peripheral].Bit);
+  return 0;
+}
+
+int Disable_Peripheral_Clock(Peripherals peripheral)
+{
+  *RCC_Table[peripheral].Register &= ~(RCC_Table[peripheral].Bit);
+  return 0;
+}
+
+
+
+
+
