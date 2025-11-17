@@ -1,0 +1,19 @@
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "Custom_GPIO_HAL.h"
+#include "Custom_RCC_HAL.h"
+
+
+void Error_Handler(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __MAIN_H */
