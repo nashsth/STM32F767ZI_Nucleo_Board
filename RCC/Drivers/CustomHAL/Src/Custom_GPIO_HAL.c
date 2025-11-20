@@ -42,20 +42,23 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   }
 
   //Step 1 
-  uint32_t Timeout = 1000000;
-  if(!((RCC -> CR) & RCC_CR_HSION))
-  {
-    (RCC -> CR) |= RCC_CR_HSION;
-  }
+  // uint32_t Timeout = 1000000;
+  // if(!((RCC -> CR) & RCC_CR_HSION))
+  // {
+    // (RCC -> CR) |= RCC_CR_HSION;
+  // }
 
-  while(!((RCC -> CR) & RCC_CR_HSIRDY))
-  {
-    Timeout--;
-    if(0 == Timeout)
-    {
-      return GPIO_ERROR_CLOCK_TIMEOUT; //HSI Clock failed to stabilize
-    }
-  }
+  // while(!((RCC -> CR) & RCC_CR_HSIRDY))
+  // {
+    // Timeout--;
+    // if(0 == Timeout)
+    // {
+      // return GPIO_ERROR_CLOCK_TIMEOUT; //HSI Clock failed to stabilize
+    // }
+  // }
+  
+  RCC_Clock_Is_Ready(CLOCK_HSI);
+
   
   //Step 2
   //To determine what value to put in the AHB1ENR register, use the memory map. Each GPIO port is 0x400

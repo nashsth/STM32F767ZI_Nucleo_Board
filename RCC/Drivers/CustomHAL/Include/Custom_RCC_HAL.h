@@ -184,7 +184,7 @@ int RCC_Configure_Clock(Clock_Source clock);
 
 int RCC_Configure_PLL();
 
-int RCC_Clock_Is_Ready();
+int RCC_Clock_Is_Ready(Clocks clock);
 
 int RCC_Set_System_Clock();
 
