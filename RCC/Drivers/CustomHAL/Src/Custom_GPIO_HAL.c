@@ -1,5 +1,30 @@
 #include "Custom_GPIO_HAL.h" 
 
+/*
+* The purpose of this helper function is to allow the GPIO HAL to make use
+* of the RCC HAL functions. The problem is that the GPIO HAL makes use of the
+* GPIO_TypeDef type to initialize the GPIO peripheral, but the RCC HAL doesn't.
+* So, we have to associate the GPIO_TypeDef type with the RCC Peripherals enum.
+*
+* */
+static Peripherals GPIO_Port_To_RCC_Peripherals(GPIO_TypeDef* GPIO_Port);
+
+Peripherals GPIO_Port_To_RCC_Peripherals(GPIO_TypeDef* GPIO_Port)
+{
+  if(GPIO_Port == GPIOA) return RCC_GPIOA;
+  if(GPIO_Port == GPIOB) return RCC_GPIOB;
+  if(GPIO_Port == GPIOC) return RCC_GPIOC;
+  if(GPIO_Port == GPIOD) return RCC_GPIOD;
+  if(GPIO_Port == GPIOE) return RCC_GPIOE;
+  if(GPIO_Port == GPIOF) return RCC_GPIOF;
+  if(GPIO_Port == GPIOG) return RCC_GPIOG;
+  if(GPIO_Port == GPIOH) return RCC_GPIOH;
+  if(GPIO_Port == GPIOI) return RCC_GPIOI;
+  if(GPIO_Port == GPIOJ) return RCC_GPIOJ;
+  if(GPIO_Port == GPIOK) return RCC_GPIOK;
+  return (Peripherals)-1; //if no match, return -1
+}
+
 int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
 {
   //Step 1: Wait for clock to be stable (for now, assume it to be the HSI clock)
@@ -42,8 +67,16 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
   //is defined to be a uint32_t but the GPIO_Port is a GPIO_TypeDef* pointer type, and GPIOA_BASE etc are 
   //unsigned long integers. So we need to do some careful type conversions.
   
-  uint32_t GPIO_Port_Offset = ((uint32_t)GPIO_Port - (uint32_t)GPIOA_BASE)/((uint32_t)GPIOB_BASE - (uint32_t)GPIOA_BASE);
-  (RCC -> AHB1ENR) |= (1 << GPIO_Port_Offset);
+  // uint32_t GPIO_Port_Offset = ((uint32_t)GPIO_Port - (uint32_t)GPIOA_BASE)/((uint32_t)GPIOB_BASE - (uint32_t)GPIOA_BASE);
+  // (RCC -> AHB1ENR) |= (1 << GPIO_Port_Offset);
+
+  //Use the RCC HAL's function instead of hardcoding the peripheral clock enable.
+  Peripherals value = GPIO_Port_To_RCC_Peripherals(GPIO_Port);
+  if(value == (Peripherals)-1) //typecast the integer "-1" as a "Peripherals" type
+  {
+    return -1;
+  }
+  RCC_Enable_Peripheral_Clock(value);
 
   //Step 3 
   (GPIO_Port -> MODER) &= ~(0b11 << ((Configurations -> Pin)*2)); //clear the MODER register's bits

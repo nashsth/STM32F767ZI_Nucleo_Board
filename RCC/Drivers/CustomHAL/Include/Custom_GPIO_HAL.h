@@ -8,6 +8,7 @@
 
 #pragma once
 #include "stm32f767xx.h"
+#include "Custom_RCC_HAL.h"
 #include <stddef.h>
 
 /* Configuration struct deals with high-level concepts:
