@@ -28,7 +28,8 @@ Core/Src/system_stm32f7xx.c \
 Core/Src/syscalls.c \
 Core/Src/sysmem.c \
 Drivers/CustomHAL/Src/Custom_GPIO_HAL.c \
-Drivers/CustomHAL/Src/Custom_RCC_HAL.c
+Drivers/CustomHAL/Src/Custom_RCC_HAL.c \
+Drivers/CustomHAL/Src/Custom_SysTick_HAL.c
 
 # ASM source files
 ASM_SOURCES =  \
