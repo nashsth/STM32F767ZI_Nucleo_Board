@@ -6,6 +6,11 @@
 #include <stddef.h>
 #include "stm32f767xx.h"
 #include <stdint.h>
+#include "Custom_RCC_HAL.h" //the RCC HAL is central to all other peripheral HALs because the RCC
+                            //HAL is the one that enables the clock to all peripherals. It might
+                            //not be important for the SysTick HAL because SysTick is a ARM-core
+                            //peripheral rather than an STM32 peripheral, but get in the habit of
+                            //including the RCC HAL in all other HALs.
 
 /* Initialize the SysTIck peripheral. Need to:
  * 1) Select the clock source that will drive the SysTick peripheral (in Hz),

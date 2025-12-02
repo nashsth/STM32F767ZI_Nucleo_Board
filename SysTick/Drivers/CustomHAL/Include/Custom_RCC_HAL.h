@@ -26,7 +26,7 @@
  *
  *
  * 2) Peripheral clock enabling. How would this interact with the GPIO HAL? Would the GPIO HAL include this
- * RCC HAL? 
+ * RCC HAL? Answer: Yes; the RCC HAL is central to all other HALs.
  *
  * 3) Internal/external clock measuring using TIM5, channel 4 and TIM11, channel 1. Can be used to measure
  * and confirm clock frequencies. This will require the timer module to be set up so come back to this 
@@ -34,12 +34,10 @@
  *
  * 4) Setting up a clock source with the appropriate parameters. 
  *
- * 5) Switching the system clock to use something other than the HSI. 
- *
- *
- *
- *
- *
+ * 5) Switching the system clock to use something other than the HSI. Limitation: can't use LSI/LSE.
+ * 
+ * NOTE: Since this HAL is for my STM32F767ZI board, and it doesn't have an HSE or LSE, I won't implement
+ * code to set them up. They will, however, appear in enums and structs, but it's only for completeness.
  * */ 
 
 #pragma once 
