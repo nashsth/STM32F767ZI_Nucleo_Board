@@ -60,19 +60,20 @@ typedef enum
   PLL_HSE 
 } PLL_Source;
 
+typedef struct
+{
+  PLL_Source Source;
+  uint8_t M;
+  uint16_t N;
+  uint8_t P;
+  uint8_t Q;
+} PLL_Config;
+
 typedef struct 
 {
   Clocks clock;
-  struct
-  {
-    PLL_Source Source;
-    uint8_t M;
-    uint16_t N;
-    uint8_t P;
-    uint8_t Q;
-  } PLL_Config;
-
-} Clock_Source;
+  PLL_Config* Configure_PLL;
+} Clock_Source_Config;
 
 typedef enum
 {
@@ -178,7 +179,7 @@ typedef struct
 
 extern const Peripheral_Clock_Enable_t RCC_Table[RCC_COUNT];
 
-int RCC_Configure_Clock(Clock_Source clock);
+int RCC_Configure_Clock(Clock_Source_Config clock);
 
 int RCC_Configure_PLL();
 

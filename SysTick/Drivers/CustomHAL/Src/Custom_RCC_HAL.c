@@ -130,3 +130,76 @@ int RCC_Clock_Is_Ready(Clocks clock)
   }
   return 0;
 }
+
+int RCC_Configure_Clock(Clock_Source_Config* clock_config)
+{
+  if(clock_config->clock == CLOCK_HSI)
+  {
+    if(clock->Configure_PLL != NULL)
+    {
+      return -1; //you can't have PLL configurations if you're not using PLL
+    }
+
+    if(!((RCC->CR) & RCC_CR_HSION))
+    {
+      (RCC->CR) |= RCC_CR_HSION;
+    }
+
+    while(!((RCC->CR) & RCC_CR_HSIRDY))
+    {
+      Timeout--;
+      if(Timeout == 0)
+      {
+        return -1;
+      }
+    }
+    //do nothing because the HSI clock is selected on startup by default
+  }
+
+  else if(clock_config->clock == CLOCK_HSE)
+  {
+    if(clock->Configure_PLL != NULL)
+    {
+      return -1; //you can't have PLL configurations if you're not using PLL
+    }
+
+    //do nothing because I don't have an external oscillator so I'm not going to implement the logic for this
+  }
+
+  else if(clock_config->clock == CLOCK_LSE)
+  {
+    if(clock->Configure_PLL != NULL)
+    {
+      return -1; //you can't have PLL configurations if you're not using PLL
+    }
+
+    //do nothing because I don't have an external oscillator
+  }
+  
+  else if(clock_config->clock == CLOCK_LSI)
+  {
+    if(clock->Configure_PLL != NULL)
+    {
+      return -1; //you can't have PLL configurations if you're not using PLL
+    }
+
+    uint32_t Timeout = 1000000;
+
+    (RCC->CSR) |= RCC_CSR_LSION;
+    while(!((RCC->CSR) & RCC_CSR_LSIRDY))
+    {
+      Timeout--;
+      if(Timeout==0)
+      {
+        return -1; //oscillator couldn't stabilize so no point in being stuck in an infinite loop
+      }
+      // With RTOS's you'd want to yield instead of busy-waiting so that you're not wasting CPU time
+    }
+  }
+
+  else if (clock_config->clock == CLOCK_PLL)
+  {
+    
+  }
+  return 0;
+}
