@@ -153,7 +153,8 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
         return -1;
       }
     }
-    //do nothing because the HSI clock is selected on startup by default
+
+    return 0;
   }
 
   else if(clock_config->clock == CLOCK_HSE)
@@ -162,7 +163,7 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
-
+    return 0;
     //do nothing because I don't have an external oscillator so I'm not going to implement the logic for this
   }
 
@@ -172,7 +173,7 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
-
+    return 0;
     //do nothing because I don't have an external oscillator
   }
   
@@ -195,11 +196,21 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
       }
       // With RTOS's you'd want to yield instead of busy-waiting so that you're not wasting CPU time
     }
+
+    return 0;
   }
 
   else if (clock_config->clock == CLOCK_PLL)
   {
+    //Set PLLSRC as either HSI (0) or HSE (1)
     
+    //M = division factor for main PLL input clock
+    //N = multiplication factor for VCO (VCO = )
+    //P = division factor for main system clock
+    //Q = division factor USB, SDMMC, and RNG clock
+    //R = division factor for DSI clock
+    //Therefore, if you only want to set PLL as system clock, you only need to worry about M, N, and P.
+    //Q and R are for peripherals that we don't care about right now.
   }
-  return 0;
+  return -1; //one clock MUST be selected. If code reaches this point, return an error
 }
