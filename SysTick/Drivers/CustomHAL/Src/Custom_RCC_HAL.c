@@ -135,10 +135,12 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
 {
   if(clock_config->clock == CLOCK_HSI)
   {
-    if(clock->Configure_PLL != NULL)
+    if(clock_config->Configure_PLL != NULL)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
+
+    uint32_t Timeout = 1000000;
 
     if(!((RCC->CR) & RCC_CR_HSION))
     {
@@ -159,7 +161,7 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
 
   else if(clock_config->clock == CLOCK_HSE)
   {
-    if(clock->Configure_PLL != NULL)
+    if(clock_config->Configure_PLL != NULL)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
@@ -169,7 +171,7 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
 
   else if(clock_config->clock == CLOCK_LSE)
   {
-    if(clock->Configure_PLL != NULL)
+    if(clock_config->Configure_PLL != NULL)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
@@ -179,7 +181,7 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
   
   else if(clock_config->clock == CLOCK_LSI)
   {
-    if(clock->Configure_PLL != NULL)
+    if(clock_config->Configure_PLL != NULL)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
@@ -202,15 +204,49 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
 
   else if (clock_config->clock == CLOCK_PLL)
   {
-    //Set PLLSRC as either HSI (0) or HSE (1)
+    if((clock_config->Configure_PLL) == NULL)
+    {
+      return -1; //If you're using PLL, then you have to have a valid PLL configuration
+    }
+    
+    //Set PLLSRC as either HSI (0) or HSE (1); since HSE won't be implemented, set to 0.
+    if(((clock_config->Configure_PLL)->Source) == PLL_HSI)
+    {
+      (RCC->PLLCFGR) &= ~(RCC_PLLCFGR_PLLSRC); //Remember that the HSI has a frequency of 16 MHz.
+    }
+    
+    else if(((clock_config->Configure_PLL)->Source) == PLL_HSE)
+    {
+      //(RCC->PLLCFGR) |= (RCC_PLLCFGR_PLLSRC); //If you want to use HSE
+      (RCC->PLLCFGR) &= ~(RCC_PLLCFGR_PLLSRC);
+    }
     
     //M = division factor for main PLL input clock
-    //N = multiplication factor for VCO (VCO = )
+    //N = multiplication factor for VCO (VCO = Voltage Controlled Oscillator)
     //P = division factor for main system clock
     //Q = division factor USB, SDMMC, and RNG clock
     //R = division factor for DSI clock
     //Therefore, if you only want to set PLL as system clock, you only need to worry about M, N, and P.
     //Q and R are for peripherals that we don't care about right now.
+    
+    //Since it's impossible to check all possible combinations of M,N,P, Q, etc, we'll only 
+    //go with one combination for now.
+
+    Pll_Config PLL_216Mhz_From_HSI = 
+    {
+      .Source = PLL_HSI,
+      .M = 16, //010000 in binary
+      .N = 432, //110110000 in binary
+      .P = 2, //10. However, the reference manual says that if you want P = 2, then you set PLLP to 00
+      .Q = 9 //1001
+    };
+
+    //Configure the PLLCFGR register appropriately, based on the values of the config struct.
+
+    //enable PLL
+    (RCC->CR) |= (RCC_CR_PLLON);
+    
+    return 0;
   }
   return -1; //one clock MUST be selected. If code reaches this point, return an error
 }
