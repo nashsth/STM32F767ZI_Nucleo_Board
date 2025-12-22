@@ -241,11 +241,23 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
       .Q = 9 //1001
     };
 
+    //Clear the contents of PLLCFGR before modifying it as per the config struct
+    (RCC->PLLCFGR) &= ~(RCC_PLLCFGR_PLLM_Msk |
+                  RCC_PLLCFGR_PLLN_Msk |
+                  RCC_PLLCFGR_PLLP_Msk |
+                  RCC_PLLCFGR_PLLQ_Msk |
+                  RCC_PLLCFGR_PLLSRC_Msk);
+
     //Configure the PLLCFGR register appropriately, based on the values of the config struct.
+    (RCC->PLLCFGR) |= (RCC_PLLCFGR_PLLM_4); //Set the M value
+    (RCC->PLLCFGR) |= (RCC_PLLCFGR_PLLN_8 | RCC_PLLCFGR_PLLN_7 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_4); //Set the N value
+    //Since P = 2 <=> PLLP = 00, no need to use any bit-twidling
+    (RCC->PLLCFGR) |= (RCC_PLLCFGR_PLLQ_3 | RCC_PLLCFGR_PLLQ_0); //Set the Q value
+
 
     //enable PLL
     (RCC->CR) |= (RCC_CR_PLLON);
-    
+
     return 0;
   }
   return -1; //one clock MUST be selected. If code reaches this point, return an error
