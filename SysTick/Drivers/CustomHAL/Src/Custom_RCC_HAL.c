@@ -207,7 +207,7 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
     //Since it's impossible to check all possible combinations of M,N,P, Q, etc, we'll only 
     //go with one combination for now.
 
-    Pll_Config PLL_216Mhz_From_HSI = 
+    PLL_Config PLL_216Mhz_From_HSI = 
     {
       .Source = PLL_HSI,
       .M = 16, //010000 in binary

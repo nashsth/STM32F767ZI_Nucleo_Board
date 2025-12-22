@@ -57,7 +57,12 @@ int GPIO_Init(GPIO_TypeDef* GPIO_Port, GPIO_Config* Configurations)
     // }
   // }
   
-  RCC_Clock_Is_Ready(CLOCK_HSI);
+  Clock_Source_Config clock_config = {
+    .clock = CLOCK_HSI,
+    .Configure_PLL = NULL
+  };
+
+  RCC_Set_System_Clock(&clock_config);
 
   
   //Step 2
