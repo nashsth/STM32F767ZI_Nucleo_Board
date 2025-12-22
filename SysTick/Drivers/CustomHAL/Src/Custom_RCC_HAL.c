@@ -133,14 +133,13 @@ int RCC_Clock_Is_Ready(Clocks clock)
 
 int RCC_Configure_Clock(Clock_Source_Config* clock_config)
 {
+  uint32_t Timeout = 1000000;
   if(clock_config->clock == CLOCK_HSI)
   {
     if(clock_config->Configure_PLL != NULL)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
-
-    uint32_t Timeout = 1000000;
 
     if(!((RCC->CR) & RCC_CR_HSION))
     {
@@ -185,8 +184,6 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
     {
       return -1; //you can't have PLL configurations if you're not using PLL
     }
-
-    uint32_t Timeout = 1000000;
 
     (RCC->CSR) |= RCC_CSR_LSION;
     while(!((RCC->CSR) & RCC_CSR_LSIRDY))
@@ -245,8 +242,7 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
     (RCC->PLLCFGR) &= ~(RCC_PLLCFGR_PLLM_Msk |
                   RCC_PLLCFGR_PLLN_Msk |
                   RCC_PLLCFGR_PLLP_Msk |
-                  RCC_PLLCFGR_PLLQ_Msk |
-                  RCC_PLLCFGR_PLLSRC_Msk);
+                  RCC_PLLCFGR_PLLQ_Msk);
 
     //Configure the PLLCFGR register appropriately, based on the values of the config struct.
     (RCC->PLLCFGR) |= (RCC_PLLCFGR_PLLM_4); //Set the M value
@@ -257,6 +253,16 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
 
     //enable PLL
     (RCC->CR) |= (RCC_CR_PLLON);
+
+    //Wait for PLL to be ready
+    while(!((RCC->CR) & RCC_CR_PLLRDY))
+    {
+      Timeout--;
+      if(Timeout ==0)
+      {
+        return -1; //PLL couldn't stabilitize so no point in being stuck in an infinite loop
+      }
+    }
 
     return 0;
   }
