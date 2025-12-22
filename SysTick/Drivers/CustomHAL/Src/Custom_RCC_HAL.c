@@ -259,6 +259,8 @@ int RCC_Set_System_Clock(Clock_Source_Config* clock_config)
   switch(clock_config->clock)
   {
     case CLOCK_HSI:
+    {
+
       if(RCC_Configure_Clock(clock_config) !=0)
       {
         return -1;
@@ -275,7 +277,11 @@ int RCC_Set_System_Clock(Clock_Source_Config* clock_config)
       }
       return 0;
 
+    }
+
     case CLOCK_PLL:
+    {
+
       if(RCC_Configure_Clock(clock_config) != 0)
       {
         return -1;
@@ -291,10 +297,53 @@ int RCC_Set_System_Clock(Clock_Source_Config* clock_config)
         }
       }
       return 0;
-  
+    }
+
     default: //LSI, LSE can't be used as system clock and HSE isn't implemented so do nothing
+    {
       return -1;
+    }
   }
 
   return 0;
+}
+
+//Return the clock frequency in MHz
+int RCC_Measure_Clock_Frequency()
+{
+  //Have to check which clock is currently running.
+  //If it's HSI, then return 16 MHz (so 16) immediately, since HSI frequency is always 16 MHz.
+  //If PLL, look at the PLL config register and do the appropriate multiplication/division any return the result
+  const uint8_t HSI_FREQ = 16; //16 MHz
+  switch(((RCC->CFGR) & RCC_CFGR_SWS))
+  {
+    case RCC_CFGR_SWS_HSI:
+    {
+        return HSI_FREQ;
+    }
+
+    case RCC_CFGR_SWS_PLL:
+    {
+        uint32_t SRC = ((RCC->PLLCFGR) & RCC_PLLCFGR_PLLSRC);
+        uint8_t M = (uint8_t)(((RCC->PLLCFGR) & RCC_PLLCFGR_PLLM)>>RCC_PLLCFGR_PLLM_Pos);
+        uint16_t N = (uint16_t)(((RCC->PLLCFGR) & RCC_PLLCFGR_PLLN)>>RCC_PLLCFGR_PLLN_Pos);
+        uint8_t P = (uint8_t)(((RCC->PLLCFGR) & RCC_PLLCFGR_PLLP)>>RCC_PLLCFGR_PLLP_Pos);
+        if(SRC == 0)
+        {
+          if(P == 0) //The P value is encoded so that 00 -> 2, 01 -> 4, 10 -> 6 and 11 -> 8
+            return (((HSI_FREQ)*(N/M))/2);
+          else if(P == 1)
+            return (((HSI_FREQ)*(N/M))/4);
+          else if(P == 2)
+            return (((HSI_FREQ)*(N/M))/6);
+          else if(P == 3)
+            return (((HSI_FREQ)*(N/M))/8);
+        }
+    }
+
+    default:
+    {
+        return -1; //HSE isn't implemented so return -1 if code reaches this point.
+    }
+  }
 }

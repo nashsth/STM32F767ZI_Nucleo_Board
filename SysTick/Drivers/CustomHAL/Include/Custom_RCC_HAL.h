@@ -206,6 +206,7 @@ int RCC_Enable_Peripheral_Clock(Peripherals peripheral);
 
 int RCC_Disable_Peripheral_Clock(Peripherals peripheral);
 
+//Measure the frequency of the currently running system clock
 int RCC_Measure_Clock_Frequency();
 
 int RCC_Output_Clock_Signal();
