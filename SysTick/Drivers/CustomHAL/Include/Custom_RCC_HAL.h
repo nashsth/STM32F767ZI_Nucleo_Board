@@ -179,9 +179,9 @@ typedef struct
 
 extern const Peripheral_Clock_Enable_t RCC_Table[RCC_COUNT];
 
-int RCC_Configure_Clock(Clock_Source_Config clock);
+int RCC_Configure_Clock(Clock_Source_Config* clock);
 
-int RCC_Set_System_Clock();
+int RCC_Set_System_Clock(Clock_Source_Config* clock);
 
 //This one is the most important function. The question is, how do we implement this
 //function in a nice way, without using a bunch of switch/if statements? The goal of

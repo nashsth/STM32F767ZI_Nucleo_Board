@@ -246,3 +246,55 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
   }
   return -1; //one clock MUST be selected. If code reaches this point, return an error
 }
+
+int RCC_Set_System_Clock(Clock_Source_Config* clock_config)
+{
+  uint32_t Timeout = 1000000;
+
+  if(clock_config == NULL)
+  {
+    return -1;
+  }
+
+  switch(clock_config->clock)
+  {
+    case CLOCK_HSI:
+      if(RCC_Configure_Clock(clock_config) !=0)
+      {
+        return -1;
+      }
+      (RCC->CFGR) &= ~(RCC_CFGR_SW); //Clear SW fields before modifiyng it
+      (RCC->CFGR) |= (RCC_CFGR_SW_HSI); //Put 00 to SW field of CFGR register to set HSI as system clock
+      while(((RCC->CFGR) & (RCC_CFGR_SWS)) != RCC_CFGR_SWS_HSI) //Check if the system clock really is HSI
+      {
+        Timeout--;
+        if(Timeout == 0)
+        {
+          return -1;
+        }
+      }
+      return 0;
+
+    case CLOCK_PLL:
+      if(RCC_Configure_Clock(clock_config) != 0)
+      {
+        return -1;
+      }
+      (RCC->CFGR) &= ~(RCC_CFGR_SW); //Clear SW fields before modifying it
+      (RCC->CFGR) |= (RCC_CFGR_SW_PLL); //Put 10 to SW field of CFGR register to set PLL as system clock
+      while(((RCC->CFGR) & (RCC_CFGR_SWS)) != RCC_CFGR_SWS_PLL) //Check if the system clock really is PLL
+      {
+        Timeout--;
+        if(Timeout == 0)
+        {
+          return -1;
+        }
+      }
+      return 0;
+  
+    default: //LSI, LSE can't be used as system clock and HSE isn't implemented so do nothing
+      return -1;
+  }
+
+  return 0;
+}
