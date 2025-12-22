@@ -109,28 +109,6 @@ int RCC_Disable_Peripheral_Clock(Peripherals peripheral)
   return 0;
 }
 
-int RCC_Clock_Is_Ready(Clocks clock)
-{
-  if(clock == CLOCK_HSI)
-  {
-    uint32_t Timeout = 1000000;
-    if(!((RCC->CR) & RCC_CR_HSION))
-    {
-      (RCC->CR) |= RCC_CR_HSION;
-    }
-
-    while(!((RCC->CR) & RCC_CR_HSIRDY))
-    {
-      Timeout--;
-      if(Timeout == 0)
-      {
-        return -1;
-      }
-    }
-  }
-  return 0;
-}
-
 int RCC_Configure_Clock(Clock_Source_Config* clock_config)
 {
   uint32_t Timeout = 1000000;

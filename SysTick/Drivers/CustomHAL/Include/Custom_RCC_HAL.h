@@ -181,10 +181,6 @@ extern const Peripheral_Clock_Enable_t RCC_Table[RCC_COUNT];
 
 int RCC_Configure_Clock(Clock_Source_Config clock);
 
-int RCC_Configure_PLL();
-
-int RCC_Clock_Is_Ready(Clocks clock);
-
 int RCC_Set_System_Clock();
 
 //This one is the most important function. The question is, how do we implement this
