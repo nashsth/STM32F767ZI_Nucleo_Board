@@ -61,21 +61,59 @@ void Blink_Using_Custom_HAL(void)
   //GPIO_Init(GPIOJ, &LED);
   //GPIO_Init(GPIOK, &LED);
 
-  while(1)
+  PLL_Config PLL_Config_Struct = 
   {
-    GPIO_Toggle(GPIOA, LED.Pin);
-    GPIO_Toggle(GPIOB, LED.Pin);
-    GPIO_Toggle(GPIOC, LED.Pin);
-    GPIO_Toggle(GPIOD, LED.Pin);
-    GPIO_Toggle(GPIOE, LED.Pin);
-    GPIO_Toggle(GPIOF, LED.Pin);
-    GPIO_Toggle(GPIOG, LED.Pin);
-    //GPIO_Toggle(GPIOH, LED.Pin);
-    //GPIO_Toggle(GPIOI, LED.Pin);
-    //GPIO_Toggle(GPIOJ, LED.Pin);
-    //GPIO_Toggle(GPIOK, LED.Pin);
-    for(volatile int i = 0; i <= HAL_DELAY; i++);
+      .Source = PLL_HSI,
+      .M = 16,
+      .N = 432,
+      .P = 2,
+      .Q = 9
+  };
+
+  Clock_Source_Config PLL_Clock_Config = 
+  {
+    .clock = CLOCK_PLL,
+    .Configure_PLL = &PLL_Config_Struct
+  };
+
+  RCC_Set_System_Clock(&PLL_Clock_Config);
+
+  uint32_t Clk_Freq = RCC_Measure_Clock_Frequency();
+
+  if(Clk_Freq == 16)
+  {
+    while(1)
+    {
+      GPIO_Toggle(GPIOA, LED.Pin);
+      for(volatile int i = 0; i <= HAL_DELAY; i++);
+    }
   }
+
+
+  else if(Clk_Freq == 216)
+  {
+    while(1)
+    {
+      GPIO_Toggle(GPIOB, LED.Pin);
+      for(volatile int i = 0; i <= HAL_DELAY; i++);
+    }
+  }
+
+  // while(1)
+  // {
+  //   GPIO_Toggle(GPIOA, LED.Pin);
+  //   GPIO_Toggle(GPIOB, LED.Pin);
+  //   GPIO_Toggle(GPIOC, LED.Pin);
+  //   GPIO_Toggle(GPIOD, LED.Pin);
+  //   GPIO_Toggle(GPIOE, LED.Pin);
+  //   GPIO_Toggle(GPIOF, LED.Pin);
+  //   GPIO_Toggle(GPIOG, LED.Pin);
+  //   //GPIO_Toggle(GPIOH, LED.Pin);
+  //   //GPIO_Toggle(GPIOI, LED.Pin);
+  //   //GPIO_Toggle(GPIOJ, LED.Pin);
+  //   //GPIO_Toggle(GPIOK, LED.Pin);
+  //   for(volatile int i = 0; i <= HAL_DELAY; i++);
+  // }
 }
 
 void Blink_LED_Based_On_Input(void)
@@ -139,8 +177,8 @@ void Blink_LED_Based_On_Input(void)
 int main(void)
 {
   //Blink_Using_Registers();
-  //Blink_Using_Custom_HAL();
-  Blink_LED_Based_On_Input();
+  Blink_Using_Custom_HAL();
+  //Blink_LED_Based_On_Input();
 	return 0;
 }
 

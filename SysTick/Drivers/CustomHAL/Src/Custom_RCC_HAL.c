@@ -196,6 +196,13 @@ int RCC_Configure_Clock(Clock_Source_Config* clock_config)
       (RCC->PLLCFGR) &= ~(RCC_PLLCFGR_PLLSRC);
     }
     
+    //It turns out that in order to switch to PLL safely, you have to make sure 
+    //the the flash memory can handle being accessed at a faster rate. That's what the
+    //following does. Not sure why this isn't explained in the RCC section though. Kind of stupid.
+    (FLASH->ACR) &= ~(FLASH_ACR_LATENCY);
+    (FLASH->ACR) |= (FLASH_ACR_LATENCY_7WS);
+    (FLASH->ACR) |= (FLASH_ACR_PRFTEN);
+
     //M = division factor for main PLL input clock
     //N = multiplication factor for VCO (VCO = Voltage Controlled Oscillator)
     //P = division factor for main system clock
